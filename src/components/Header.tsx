@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function Header() {
   return (
-    <header style={{ display: "flex", gap: "20px", padding: "10px", background: "#000000ff" }}>
+    <header style={{ display: "flex", gap: "20px", padding: "10px", background: "#ffffffff" }}>
       <Link href="/">Home</Link>
       <Link href="/about">About</Link>
       <Link href="/contact">Contact</Link>
