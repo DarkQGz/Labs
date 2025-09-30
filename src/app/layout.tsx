@@ -14,7 +14,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         style={{
           display: "flex",
           flexDirection: "column",
-          minHeight: "100vh", // экран дүүрэн
+          minHeight: "100vh",
         }}
       >
         <SidebarNavbar />
