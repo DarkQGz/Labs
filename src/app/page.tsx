@@ -2,8 +2,8 @@ export default function Home() {
   return (
     <div
       style={{
-        backgroundColor: "#000000ff", // gray background
-        minHeight: "80vh",          // гол content-ийг page өндөртэй ойролцоо
+        backgroundColor: "#000000ff", 
+        minHeight: "80vh",         
         display: "flex",
         justifyContent: "center",
         alignItems: "center",

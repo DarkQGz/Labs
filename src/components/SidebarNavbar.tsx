@@ -1,4 +1,4 @@
-"use client"; // client-side component needed for state
+"use client";
 
 import { useState } from "react";
 import Link from "next/link";
@@ -57,6 +57,7 @@ export default function SidebarNavbar() {
           <Link href="/about" onClick={() => setIsOpen(false)}>About</Link>
           <Link href="/contact" onClick={() => setIsOpen(false)}>Contact</Link>
           <Link href="/blog/1" onClick={() => setIsOpen(false)}>Blog</Link>
+          <Link href="/game/shuffle" onClick={() => setIsOpen(false)}>Shuffle</Link>
         </nav>
       </div>
     </>
