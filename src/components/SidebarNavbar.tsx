@@ -58,8 +58,8 @@ export default function SidebarNavbar() {
           <Link href="/contact" onClick={() => setIsOpen(false)}>Contact</Link>
           <Link href="/blog/1" onClick={() => setIsOpen(false)}>Blog</Link>
           <Link href="/game/shuffle" onClick={() => setIsOpen(false)}>Shuffle</Link>
-          <Link href="/game/calc" onClick={() => setIsOpen(false)}>calc</Link>
-          <Link href="/game/todo" onClick={() => setIsOpen(false)}>todo</Link>
+          <Link href="/game/calc" onClick={() => setIsOpen(false)}>Calc</Link>
+          <Link href="/game/todo" onClick={() => setIsOpen(false)}>To-do</Link>
         </nav>
       </div>
     </>
