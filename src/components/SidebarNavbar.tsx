@@ -2,34 +2,39 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 
 export default function SidebarNavbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [userEmail, setUserEmail] = useState("");
-  const router = useRouter();
+  const [username, setUsername] = useState("");
 
   // Load login status from localStorage on mount
   useEffect(() => {
     const user = localStorage.getItem("user");
     if (user) {
-      setIsLoggedIn(true);
-      setUserEmail(user);
+      try {
+        const parsed = JSON.parse(user);
+        setIsLoggedIn(true);
+        setUsername(parsed.name || parsed.email || "");
+      } catch (err) {
+        console.warn("Invalid user data in localStorage:", user);
+        // fallback if user was stored as plain string
+        setIsLoggedIn(true);
+        setUsername(user);
+      }
     }
   }, []);
 
   const handleLogout = () => {
     localStorage.removeItem("user");
     setIsLoggedIn(false);
-    setUserEmail("");
+    setUsername("");
     setIsOpen(false);
-    router.push("/"); // optional redirect to home
+    window.location.href = "/"; // optional redirect
   };
 
   return (
     <>
-      {/* Open sidebar button */}
       <button
         onClick={() => setIsOpen(true)}
         style={{
@@ -40,15 +45,14 @@ export default function SidebarNavbar() {
           fontSize: "24px",
           padding: "10px",
           background: "none",
-          border: "none",
           color: "#fff",
+          border: "none",
           cursor: "pointer",
         }}
       >
         ☰
       </button>
 
-      {/* Overlay background */}
       <div
         onClick={() => setIsOpen(false)}
         style={{
@@ -63,7 +67,6 @@ export default function SidebarNavbar() {
         }}
       ></div>
 
-      {/* Sidebar content */}
       <div
         style={{
           position: "fixed",
@@ -71,34 +74,30 @@ export default function SidebarNavbar() {
           right: 0,
           width: "250px",
           height: "100%",
-          background: "#111",
+          background: "#222",
           boxShadow: "-2px 0 5px rgba(0,0,0,0.3)",
           transform: isOpen ? "translateX(0)" : "translateX(100%)",
           transition: "transform 0.3s ease",
           zIndex: 1002,
           padding: "20px",
-          color: "#fff",
-          display: "flex",
-          flexDirection: "column",
+          color: "white",
         }}
       >
-        {/* Close button */}
         <button
           onClick={() => setIsOpen(false)}
           style={{
             fontSize: "24px",
             marginBottom: "20px",
+            color: "white",
             background: "none",
             border: "none",
-            color: "#fff",
             cursor: "pointer",
           }}
         >
           ×
         </button>
 
-        {/* Navigation links */}
-        <nav style={{ display: "flex", flexDirection: "column", gap: "15px", flexGrow: 1 }}>
+        <nav style={{ display: "flex", flexDirection: "column", gap: "15px" }}>
           <Link href="/" onClick={() => setIsOpen(false)}>Home</Link>
           <Link href="/about" onClick={() => setIsOpen(false)}>About</Link>
           <Link href="/contact" onClick={() => setIsOpen(false)}>Contact</Link>
@@ -106,9 +105,9 @@ export default function SidebarNavbar() {
           <Link href="/game/shuffle" onClick={() => setIsOpen(false)}>Shuffle</Link>
           <Link href="/game/calc" onClick={() => setIsOpen(false)}>Calc</Link>
           <Link href="/game/todo" onClick={() => setIsOpen(false)}>To-do</Link>
+          <Link href="/users" onClick={() => setIsOpen(false)}>Users</Link>
           <hr style={{ borderColor: "#555", margin: "15px 0" }} />
 
-          {/* Authentication section */}
           {!isLoggedIn ? (
             <>
               <Link href="/login" onClick={() => setIsOpen(false)}>Login</Link>
@@ -116,7 +115,7 @@ export default function SidebarNavbar() {
             </>
           ) : (
             <>
-              <p style={{ marginBottom: "10px", wordBreak: "break-word" }}>{userEmail}</p>
+              <p style={{ margin: 0 }}>{username}</p>
               <button
                 onClick={handleLogout}
                 style={{
@@ -126,7 +125,7 @@ export default function SidebarNavbar() {
                   padding: "8px 12px",
                   borderRadius: "6px",
                   cursor: "pointer",
-                  width: "100%",
+                  marginTop: "5px",
                 }}
               >
                 Logout
