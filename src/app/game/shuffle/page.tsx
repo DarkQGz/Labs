@@ -54,9 +54,10 @@ export default function ShuffleGame() {
         flexDirection: "column",
         justifyContent: "center",
         alignItems: "center",
+        fontFamily: "Arial, sans-serif",
       }}
     >
-      <h1 style={{ marginBottom: "20px" }}>🧩Shuffle Game</h1>
+      <h1 style={{ marginBottom: "20px", letterSpacing: "1px" }}>Shuffle Game</h1>
 
       <div
         style={{
@@ -75,19 +76,20 @@ export default function ShuffleGame() {
               width: "120px",
               height: "120px",
               border:
-                selected === i ? "3px solid #00ff88" : "2px solid #555",
+                selected === i ? "3px solid #fff" : "2px solid #333",
               cursor: "pointer",
               borderRadius: "10px",
-              transition: "transform 0.2s",
+              transition: "transform 0.2s, border 0.2s",
               transform: selected === i ? "scale(1.05)" : "scale(1)",
+              filter: isSolved ? "grayscale(0%)" : "grayscale(30%)",
             }}
           />
         ))}
       </div>
 
       {isSolved && (
-        <h2 style={{ marginTop: "20px", color: "#00ff88" }}>
-          🎉 Bayr Hurgey!
+        <h2 style={{ marginTop: "20px", color: "#ccc", fontWeight: "normal" }}>
+          🎉 Congratulations!
         </h2>
       )}
 
@@ -99,15 +101,24 @@ export default function ShuffleGame() {
         }}
         style={{
           marginTop: "25px",
-          background: "#00ff88",
-          border: "none",
-          borderRadius: "8px",
-          padding: "10px 20px",
+          background: "#fff",
+          color: "#000",
+          border: "1px solid #444",
+          borderRadius: "50px",
+          padding: "10px 25px",
           fontSize: "16px",
           cursor: "pointer",
+          transition: "0.3s",
+          fontWeight: "bold",
+        }}
+        onMouseOver={(e) => {
+          e.currentTarget.style.background = "#ccc";
+        }}
+        onMouseOut={(e) => {
+          e.currentTarget.style.background = "#fff";
         }}
       >
-        Shuffle Again 🔄
+        Shuffle Again
       </button>
     </div>
   );
