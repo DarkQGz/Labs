@@ -34,8 +34,8 @@ export default function RegisterPage() {
 
     users.push({ email, password });
     localStorage.setItem("users", JSON.stringify(users));
-    localStorage.setItem("user", email); // logged in
-    router.push("/"); // redirect to home
+    localStorage.setItem("user", email);
+    router.push("/");
   };
 
   return (

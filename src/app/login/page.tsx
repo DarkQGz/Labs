@@ -21,7 +21,7 @@ export default function LoginPage() {
     }
 
     localStorage.setItem("user", email);
-    router.push("/"); // redirect to home
+    router.push("/");
   };
 
   return (

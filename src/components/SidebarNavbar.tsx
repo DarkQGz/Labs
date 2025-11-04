@@ -6,21 +6,20 @@ import Link from "next/link";
 export default function SidebarNavbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [username, setUsername] = useState("");
+  const [user, setUser] = useState<{ name?: string; email?: string } | null>(
+    null
+  );
 
   // Load login status from localStorage on mount
   useEffect(() => {
-    const user = localStorage.getItem("user");
-    if (user) {
+    const stored = localStorage.getItem("user");
+    if (stored) {
       try {
-        const parsed = JSON.parse(user);
+        const parsed = JSON.parse(stored);
         setIsLoggedIn(true);
-        setUsername(parsed.name || parsed.email || "");
-      } catch (err) {
-        console.warn("Invalid user data in localStorage:", user);
-        // fallback if user was stored as plain string
-        setIsLoggedIn(true);
-        setUsername(user);
+        setUser(parsed);
+      } catch {
+        // ignore invalid JSON
       }
     }
   }, []);
@@ -28,13 +27,14 @@ export default function SidebarNavbar() {
   const handleLogout = () => {
     localStorage.removeItem("user");
     setIsLoggedIn(false);
-    setUsername("");
+    setUser(null);
     setIsOpen(false);
-    window.location.href = "/"; // optional redirect
+    window.location.href = "/";
   };
 
   return (
     <>
+      {/* Open sidebar button */}
       <button
         onClick={() => setIsOpen(true)}
         style={{
@@ -44,15 +44,17 @@ export default function SidebarNavbar() {
           zIndex: 1001,
           fontSize: "24px",
           padding: "10px",
-          background: "none",
+          background: "#111",
           color: "#fff",
           border: "none",
+          borderRadius: "8px",
           cursor: "pointer",
         }}
       >
         ☰
       </button>
 
+      {/* Overlay */}
       <div
         onClick={() => setIsOpen(false)}
         style={{
@@ -67,6 +69,7 @@ export default function SidebarNavbar() {
         }}
       ></div>
 
+      {/* Sidebar */}
       <div
         style={{
           position: "fixed",
@@ -98,24 +101,67 @@ export default function SidebarNavbar() {
         </button>
 
         <nav style={{ display: "flex", flexDirection: "column", gap: "15px" }}>
-          <Link href="/" onClick={() => setIsOpen(false)}>Home</Link>
-          <Link href="/about" onClick={() => setIsOpen(false)}>About</Link>
-          <Link href="/contact" onClick={() => setIsOpen(false)}>Contact</Link>
-          <Link href="/blog/1" onClick={() => setIsOpen(false)}>Blog</Link>
-          <Link href="/game/shuffle" onClick={() => setIsOpen(false)}>Shuffle</Link>
-          <Link href="/game/calc" onClick={() => setIsOpen(false)}>Calc</Link>
-          <Link href="/game/todo" onClick={() => setIsOpen(false)}>To-do</Link>
-          <Link href="/users" onClick={() => setIsOpen(false)}>Users</Link>
-          <hr style={{ borderColor: "#555", margin: "15px 0" }} />
+          {/* Main Links */}
+          <Link href="/" onClick={() => setIsOpen(false)}>
+            Home
+          </Link>
+          <Link href="/about" onClick={() => setIsOpen(false)}>
+            About
+          </Link>
+          <Link href="/contact" onClick={() => setIsOpen(false)}>
+            Contact
+          </Link>
+          <Link href="/blog/1" onClick={() => setIsOpen(false)}>
+            Blog
+          </Link>
 
+          {/* Divider */}
+          <hr style={{ borderColor: "#555", margin: "10px 0" }} />
+
+          {/* Games group */}
+          <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+            <strong>Games</strong>
+            <Link href="/game/shuffle" onClick={() => setIsOpen(false)}>
+              Shuffle
+            </Link>
+            <Link href="/game/calc" onClick={() => setIsOpen(false)}>
+              Calc
+            </Link>
+            <Link href="/game/todo" onClick={() => setIsOpen(false)}>
+              To-do
+            </Link>
+          </div>
+
+          {/* Divider */}
+          <hr style={{ borderColor: "#555", margin: "10px 0" }} />
+
+          {/* Users and Weather group */}
+          <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+            <strong>Other</strong>
+            <Link href="/users" onClick={() => setIsOpen(false)}>
+              Users
+            </Link>
+            <Link href="/weather" onClick={() => setIsOpen(false)}>
+              Weather
+            </Link>
+          </div>
+
+          {/* Divider */}
+          <hr style={{ borderColor: "#555", margin: "10px 0" }} />
+
+          {/* Auth section */}
           {!isLoggedIn ? (
-            <>
-              <Link href="/login" onClick={() => setIsOpen(false)}>Login</Link>
-              <Link href="/register" onClick={() => setIsOpen(false)}>Sign Up</Link>
-            </>
+            <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+              <Link href="/login" onClick={() => setIsOpen(false)}>
+                Login
+              </Link>
+              <Link href="/register" onClick={() => setIsOpen(false)}>
+                Sign Up
+              </Link>
+            </div>
           ) : (
-            <>
-              <p style={{ margin: 0 }}>{username}</p>
+            <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+              <p>{user?.name || user?.email}</p>
               <button
                 onClick={handleLogout}
                 style={{
@@ -130,7 +176,7 @@ export default function SidebarNavbar() {
               >
                 Logout
               </button>
-            </>
+            </div>
           )}
         </nav>
       </div>
