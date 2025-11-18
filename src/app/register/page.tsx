@@ -7,35 +7,46 @@ export default function RegisterPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [error, setError] = useState("");
   const router = useRouter();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError("");
 
-    if (!email.includes("@")) {
-      setError("Имэйл буруу байна!");
-      return;
-    }
-    if (password.length < 6) {
-      setError("Нууц үг хамгийн багадаа 6 тэмдэгт!");
-      return;
-    }
-    if (password !== confirm) {
-      setError("Нууц үг таарахгүй байна!");
-      return;
-    }
+    if (!email.includes("@")) return setError("Имэйл буруу байна!");
+    if (password.length < 6) return setError("Нууц үг хамгийн багадаа 6 тэмдэгт!");
+    if (password !== confirm) return setError("Нууц үг таарахгүй байна!");
 
-    const users = JSON.parse(localStorage.getItem("users") || "[]");
-    if (users.find((u: any) => u.email === email)) {
-      setError("Имэйл бүртгэлтэй байна!");
-      return;
-    }
+    try {
+      const res = await fetch("http://iproneedful.mandakh.org/api/auth/register/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "register",
+          email,
+          password,
+          first_name: firstName,
+          last_name: lastName,
+        }),
+      });
 
-    users.push({ email, password });
-    localStorage.setItem("users", JSON.stringify(users));
-    localStorage.setItem("user", email);
-    router.push("/");
+      const data = await res.json();
+      console.log("REGISTER RESPONSE:", data);
+
+      // 8010 = success
+      if (data.resultCode === 8010) {
+        router.push("/login");
+        return;
+      }
+
+      setError(data.resultMessage || "Алдаа гарлаа!");
+    } catch (err) {
+      console.error(err);
+      setError("Сервертэй холбогдож чадсангүй!");
+    }
   };
 
   return (
@@ -53,28 +64,49 @@ export default function RegisterPage() {
     >
       <h1 style={{ fontSize: "2rem", marginBottom: "20px" }}>Register</h1>
       <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "10px", width: "300px" }}>
+        
+        <input
+          type="text"
+          placeholder="First Name"
+          value={firstName}
+          onChange={(e) => setFirstName(e.target.value)}
+          style={{ padding: "10px", borderRadius: "8px", background: "#111", color: "#fff", border: "none" }}
+        />
+
+        <input
+          type="text"
+          placeholder="Last Name"
+          value={lastName}
+          onChange={(e) => setLastName(e.target.value)}
+          style={{ padding: "10px", borderRadius: "8px", background: "#111", color: "#fff", border: "none" }}
+        />
+
         <input
           type="email"
           placeholder="Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          style={{ padding: "10px", borderRadius: "8px", border: "none", background: "#111", color: "#fff" }}
+          style={{ padding: "10px", borderRadius: "8px", background: "#111", color: "#fff", border: "none" }}
         />
+
         <input
           type="password"
           placeholder="Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          style={{ padding: "10px", borderRadius: "8px", border: "none", background: "#111", color: "#fff" }}
+          style={{ padding: "10px", borderRadius: "8px", background: "#111", color: "#fff", border: "none" }}
         />
+
         <input
           type="password"
           placeholder="Confirm Password"
           value={confirm}
           onChange={(e) => setConfirm(e.target.value)}
-          style={{ padding: "10px", borderRadius: "8px", border: "none", background: "#111", color: "#fff" }}
+          style={{ padding: "10px", borderRadius: "8px", background: "#111", color: "#fff", border: "none" }}
         />
+
         {error && <p style={{ color: "#f55" }}>{error}</p>}
+
         <button
           type="submit"
           style={{

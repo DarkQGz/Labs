@@ -9,19 +9,39 @@ export default function LoginPage() {
   const [error, setError] = useState("");
   const router = useRouter();
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError("");
 
-    const users = JSON.parse(localStorage.getItem("users") || "[]");
-    const user = users.find((u: any) => u.email === email && u.password === password);
+    try {
+      const res = await fetch("http://iproneedful.mandakh.org/api/auth/login/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "login",
+          email,
+          password,
+        }),
+      });
 
-    if (!user) {
-      setError("Имэйл эсвэл нууц үг буруу байна!");
-      return;
+      const data = await res.json();
+      console.log("LOGIN RESPONSE:", data);
+
+      // 8110 = success
+      if (data.resultCode === 8110) {
+        const user = data.data[0];
+
+        localStorage.setItem("user", JSON.stringify(user));
+        router.push("/");
+        return;
+      }
+
+      // Error from backend
+      setError(data.resultMessage || "Алдаа гарлаа!");
+    } catch (err) {
+      console.error(err);
+      setError("Сервертэй холбогдож чадсангүй!");
     }
-
-    localStorage.setItem("user", email);
-    router.push("/");
   };
 
   return (
@@ -53,7 +73,9 @@ export default function LoginPage() {
           onChange={(e) => setPassword(e.target.value)}
           style={{ padding: "10px", borderRadius: "8px", border: "none", background: "#111", color: "#fff" }}
         />
+
         {error && <p style={{ color: "#f55" }}>{error}</p>}
+
         <button
           type="submit"
           style={{
