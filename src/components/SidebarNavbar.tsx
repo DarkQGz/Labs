@@ -32,6 +32,9 @@ export default function SidebarNavbar() {
     window.location.href = "/";
   };
 
+  // If not logged in, render nothing
+  if (!isLoggedIn) return null;
+
   return (
     <>
       {/* Open sidebar button */}
@@ -115,7 +118,6 @@ export default function SidebarNavbar() {
             Blog
           </Link>
 
-          {/* Divider */}
           <hr style={{ borderColor: "#555", margin: "10px 0" }} />
 
           {/* Games group */}
@@ -132,7 +134,6 @@ export default function SidebarNavbar() {
             </Link>
           </div>
 
-          {/* Divider */}
           <hr style={{ borderColor: "#555", margin: "10px 0" }} />
 
           {/* Users and Weather group */}
@@ -146,38 +147,26 @@ export default function SidebarNavbar() {
             </Link>
           </div>
 
-          {/* Divider */}
           <hr style={{ borderColor: "#555", margin: "10px 0" }} />
 
           {/* Auth section */}
-          {!isLoggedIn ? (
-            <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-              <Link href="/login" onClick={() => setIsOpen(false)}>
-                Login
-              </Link>
-              <Link href="/register" onClick={() => setIsOpen(false)}>
-                Sign Up
-              </Link>
-            </div>
-          ) : (
-            <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-              <p>{user?.name || user?.email}</p>
-              <button
-                onClick={handleLogout}
-                style={{
-                  background: "#fff",
-                  color: "#000",
-                  border: "none",
-                  padding: "8px 12px",
-                  borderRadius: "6px",
-                  cursor: "pointer",
-                  marginTop: "5px",
-                }}
-              >
-                Logout
-              </button>
-            </div>
-          )}
+          <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+            <p>{user?.name || user?.email}</p>
+            <button
+              onClick={handleLogout}
+              style={{
+                background: "#fff",
+                color: "#000",
+                border: "none",
+                padding: "8px 12px",
+                borderRadius: "6px",
+                cursor: "pointer",
+                marginTop: "5px",
+              }}
+            >
+              Logout
+            </button>
+          </div>
         </nav>
       </div>
     </>

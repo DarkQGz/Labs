@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -27,16 +28,19 @@ export default function LoginPage() {
       const data = await res.json();
       console.log("LOGIN RESPONSE:", data);
 
-      // 8110 = success
       if (data.resultCode === 8110) {
         const user = data.data[0];
 
+        // save user info
         localStorage.setItem("user", JSON.stringify(user));
+
+        // ⭐ Set cookie for middleware
+        document.cookie = "logged_in=true; path=/;";
+
         router.push("/");
         return;
       }
 
-      // Error from backend
       setError(data.resultMessage || "Алдаа гарлаа!");
     } catch (err) {
       console.error(err);
@@ -58,20 +62,37 @@ export default function LoginPage() {
       }}
     >
       <h1 style={{ fontSize: "2rem", marginBottom: "20px" }}>Login</h1>
-      <form onSubmit={handleLogin} style={{ display: "flex", flexDirection: "column", gap: "10px", width: "300px" }}>
+
+      <form
+        onSubmit={handleLogin}
+        style={{ display: "flex", flexDirection: "column", gap: "10px", width: "300px" }}
+      >
         <input
           type="email"
           placeholder="Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          style={{ padding: "10px", borderRadius: "8px", border: "none", background: "#111", color: "#fff" }}
+          style={{
+            padding: "10px",
+            borderRadius: "8px",
+            border: "none",
+            background: "#111",
+            color: "#fff",
+          }}
         />
+
         <input
           type="password"
           placeholder="Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          style={{ padding: "10px", borderRadius: "8px", border: "none", background: "#111", color: "#fff" }}
+          style={{
+            padding: "10px",
+            borderRadius: "8px",
+            border: "none",
+            background: "#111",
+            color: "#fff",
+          }}
         />
 
         {error && <p style={{ color: "#f55" }}>{error}</p>}
@@ -91,6 +112,14 @@ export default function LoginPage() {
           Login
         </button>
       </form>
+
+      {/* Register button */}
+      <p style={{ marginTop: "15px", color: "#aaa" }}>
+        Don't have an account?{" "}
+        <Link href="/register" style={{ color: "#ffffffff", textDecoration: "underline" }}>
+          Register
+        </Link>
+      </p>
     </div>
   );
 }

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function RegisterPage() {
   const [email, setEmail] = useState("");
@@ -13,6 +14,7 @@ export default function RegisterPage() {
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
+    console.log("Works");
     e.preventDefault();
     setError("");
 
@@ -63,8 +65,10 @@ export default function RegisterPage() {
       }}
     >
       <h1 style={{ fontSize: "2rem", marginBottom: "20px" }}>Register</h1>
-      <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "10px", width: "300px" }}>
-        
+      <form
+        onSubmit={handleSubmit}
+        style={{ display: "flex", flexDirection: "column", gap: "10px", width: "300px" }}
+      >
         <input
           type="text"
           placeholder="First Name"
@@ -72,7 +76,6 @@ export default function RegisterPage() {
           onChange={(e) => setFirstName(e.target.value)}
           style={{ padding: "10px", borderRadius: "8px", background: "#111", color: "#fff", border: "none" }}
         />
-
         <input
           type="text"
           placeholder="Last Name"
@@ -80,7 +83,6 @@ export default function RegisterPage() {
           onChange={(e) => setLastName(e.target.value)}
           style={{ padding: "10px", borderRadius: "8px", background: "#111", color: "#fff", border: "none" }}
         />
-
         <input
           type="email"
           placeholder="Email"
@@ -88,7 +90,6 @@ export default function RegisterPage() {
           onChange={(e) => setEmail(e.target.value)}
           style={{ padding: "10px", borderRadius: "8px", background: "#111", color: "#fff", border: "none" }}
         />
-
         <input
           type="password"
           placeholder="Password"
@@ -96,7 +97,6 @@ export default function RegisterPage() {
           onChange={(e) => setPassword(e.target.value)}
           style={{ padding: "10px", borderRadius: "8px", background: "#111", color: "#fff", border: "none" }}
         />
-
         <input
           type="password"
           placeholder="Confirm Password"
@@ -122,6 +122,14 @@ export default function RegisterPage() {
           Register
         </button>
       </form>
+
+      {/* Login option */}
+      <p style={{ marginTop: "15px", color: "#aaa" }}>
+        Already have an account?{" "}
+        <Link href="/login" style={{ color: "#fff", textDecoration: "underline" }}>
+          Login
+        </Link>
+      </p>
     </div>
   );
 }
